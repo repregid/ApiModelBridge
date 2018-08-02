@@ -9,6 +9,7 @@ use Bezb\ModelBundle\Component\ModelFactory;
 use Bezb\ModelBundle\Component\ModelFactoryInterface;
 use Bezb\ModelBundle\Component\ModelInterface;
 use FOS\RestBundle\View\View;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,13 +28,15 @@ class CRUDController extends ApiCRUDController
      * CRUDController constructor.
      *
      * @param FormFactoryInterface $formFactory
+     * @param EventDispatcherInterface $dispatcher
      * @param ModelFactory $modelFactory
      */
     public function __construct(
         FormFactoryInterface $formFactory,
+        EventDispatcherInterface $dispatcher,
         ModelFactory $modelFactory
     ) {
-        parent::__construct($formFactory);
+        parent::__construct($formFactory, $dispatcher);
         $this->modelFactory = $modelFactory;
     }
 
@@ -48,8 +51,10 @@ class CRUDController extends ApiCRUDController
 
     /**
      * @param Request $request
+     * @param string $context
      * @param string $entity
      * @param array $groups
+     * @param array $security
      * @param string $formType
      * @param string $formMethod
      * @param string $scenario
@@ -57,13 +62,19 @@ class CRUDController extends ApiCRUDController
      */
     public function createAction(
         Request $request,
+        string $context,
         string $entity,
         array $groups,
+        array $security,
         string $formType,
         string $formMethod,
         string $scenario = BaseScenario::CREATE
     ) : View
     {
+        foreach($security as $attribute) {
+            $this->denyAccessUnlessGranted($attribute);
+        }
+
         $model  = $this->model($entity);
         $form   = $this->form($formType, $formMethod);
 
@@ -83,8 +94,10 @@ class CRUDController extends ApiCRUDController
 
     /**
      * @param Request $request
+     * @param string $context
      * @param string $entity
      * @param array $groups
+     * @param array $security
      * @param string $formType
      * @param string $formMethod
      * @param $id
@@ -93,8 +106,10 @@ class CRUDController extends ApiCRUDController
      */
     public function updateAction(
         Request $request,
+        string $context,
         string $entity,
         array $groups,
+        array $security,
         string $formType,
         string $formMethod,
         $id,
@@ -106,6 +121,10 @@ class CRUDController extends ApiCRUDController
 
         if(!$model->findBy(['id' => $id])) {
             return $this->renderNotFound();
+        }
+
+        foreach($security as $attribute) {
+            $this->denyAccessUnlessGranted($attribute, $model->getEntity());
         }
 
         $model
@@ -125,16 +144,28 @@ class CRUDController extends ApiCRUDController
 
     /**
      * @param Request $request
+     * @param string $context
      * @param string $entity
+     * @param array $security
      * @param $id
      * @return View
      */
-    public function deleteAction(Request $request, string $entity, $id) : View
+    public function deleteAction(
+        Request $request,
+        string $context,
+        string $entity,
+        array $security,
+        $id
+    ) : View
     {
         $model = $this->model($entity);
 
         if(!$model->findBy(['id' => $id])) {
             return $this->renderNotFound();
+        }
+
+        foreach($security as $attribute) {
+            $this->denyAccessUnlessGranted($attribute, $model->getEntity());
         }
 
         try {
