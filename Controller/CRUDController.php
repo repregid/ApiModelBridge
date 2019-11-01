@@ -71,8 +71,8 @@ class CRUDController extends ApiCRUDController
         string $scenario = BaseScenario::CREATE
     ) : View
     {
-        foreach($security as $attribute) {
-            $this->denyAccessUnlessGranted($attribute);
+        if (!empty($security)) {
+            $this->denyAccessUnlessGranted($security);
         }
 
         $model  = $this->model($entity);
@@ -125,8 +125,8 @@ class CRUDController extends ApiCRUDController
             return $this->renderNotFound();
         }
 
-        foreach($security as $attribute) {
-            $this->denyAccessUnlessGranted($attribute, $model->getEntity());
+        if (!empty($security)) {
+            $this->denyAccessUnlessGranted($security, $model->getEntity());
         }
 
         $model
@@ -167,9 +167,8 @@ class CRUDController extends ApiCRUDController
         if(!$model->findBy([$idName => $id])) {
             return $this->renderNotFound();
         }
-
-        foreach($security as $attribute) {
-            $this->denyAccessUnlessGranted($attribute, $model->getEntity());
+        if (!empty($security)) {
+            $this->denyAccessUnlessGranted($security, $model->getEntity());
         }
 
         try {
