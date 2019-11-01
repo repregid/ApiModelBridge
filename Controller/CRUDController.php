@@ -101,6 +101,7 @@ class CRUDController extends ApiCRUDController
      * @param string $formType
      * @param string $formMethod
      * @param $id
+     * @param string $idName
      * @param string $scenario
      * @return View
      */
@@ -113,13 +114,14 @@ class CRUDController extends ApiCRUDController
         string $formType,
         string $formMethod,
         $id,
+        string $idName = 'id',
         string $scenario = BaseScenario::UPDATE
     ) : View
     {
         $form   = $this->form($formType, $formMethod);
         $model  = $this->model($entity);
 
-        if(!$model->findBy(['id' => $id])) {
+        if(!$model->findBy([$idName => $id])) {
             return $this->renderNotFound();
         }
 
@@ -148,6 +150,7 @@ class CRUDController extends ApiCRUDController
      * @param string $entity
      * @param array $security
      * @param $id
+     * @param $idName
      * @return View
      */
     public function deleteAction(
@@ -155,12 +158,13 @@ class CRUDController extends ApiCRUDController
         string $context,
         string $entity,
         array $security,
-        $id
+        $id,
+        string $idName = 'id'
     ) : View
     {
         $model = $this->model($entity);
 
-        if(!$model->findBy(['id' => $id])) {
+        if(!$model->findBy([$idName => $id])) {
             return $this->renderNotFound();
         }
 
