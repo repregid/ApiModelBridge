@@ -71,10 +71,6 @@ class CRUDController extends ApiCRUDController
         string $scenario = BaseScenario::CREATE
     ) : View
     {
-        if (!empty($security)) {
-            $this->denyAccessUnlessGranted($security);
-        }
-
         $model  = $this->model($entity);
         $form   = $this->form($formType, $formMethod);
 
@@ -82,9 +78,15 @@ class CRUDController extends ApiCRUDController
         $model->setScenario($scenario);
 
         try {
-            if(!$model->save()) {
+            if(!$model->validate()) {
                 return $this->renderFormError($form);
             }
+
+            $obj = $model->getEntity();
+            if (!empty($security)) {
+                $this->denyAccessUnlessGranted($security, $obj);
+            }
+            $model->save(false);
         } catch (\Exception $e) {
             return $this->renderInternalError($e->getMessage());
         }
