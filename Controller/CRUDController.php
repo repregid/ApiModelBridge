@@ -86,7 +86,7 @@ class CRUDController extends ApiCRUDController
 
             $obj = $model->getEntity();
             if (!empty($security)) {
-                $this->denyAccessUnlessGranted($security, $obj);
+                $this->denyAccessUnlessGrantedAny($security, $obj);
             }
             $model->save(false);
         } catch (\Exception $e) {
@@ -130,7 +130,7 @@ class CRUDController extends ApiCRUDController
         }
 
         if (!empty($security)) {
-            $this->denyAccessUnlessGranted($security, $model->getEntity());
+            $this->denyAccessUnlessGrantedAny($security, $model->getEntity());
         }
 
         $model
@@ -172,7 +172,7 @@ class CRUDController extends ApiCRUDController
             return $this->renderNotFound();
         }
         if (!empty($security)) {
-            $this->denyAccessUnlessGranted($security, $model->getEntity());
+            $this->denyAccessUnlessGrantedAny($security, $model->getEntity());
         }
 
         try {
