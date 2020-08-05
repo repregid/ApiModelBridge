@@ -4,7 +4,6 @@ namespace Repregid\ApiModelBridge\Controller;
 
 
 use Bezb\ModelBundle\Component\BaseScenario;
-use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdaterInterface;
 use Repregid\ApiBundle\Controller\CRUDController as ApiCRUDController;
 use Bezb\ModelBundle\Component\ModelFactory;
 use Bezb\ModelBundle\Component\ModelFactoryInterface;
@@ -26,20 +25,15 @@ class CRUDController extends ApiCRUDController
     protected $modelFactory;
 
     /**
-     * CRUDController constructor.
-     *
-     * @param FormFactoryInterface $formFactory
-     * @param EventDispatcherInterface $dispatcher
-     * @param ModelFactory $modelFactory
+     * @required
+     * @param ModelFactoryInterface $modelFactory
+     * @return CRUDController
      */
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        EventDispatcherInterface $dispatcher,
-        FilterBuilderUpdaterInterface $filterBuilderUpdater,
-        ModelFactory $modelFactory
-    ) {
-        parent::__construct($formFactory, $dispatcher, $filterBuilderUpdater);
+    public function setModelFactory(ModelFactoryInterface $modelFactory): CRUDController
+    {
         $this->modelFactory = $modelFactory;
+
+        return $this;
     }
 
     /**
