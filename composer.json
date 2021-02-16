@@ -2,7 +2,7 @@
     "name": "repregid/api-model-bridge",
     "description": "API-Model Bridge",
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.1.3|^8.0",
         "repregid/api-bundle": "dev-master",
         "bezb/model-bundle": "dev-master"
     },
